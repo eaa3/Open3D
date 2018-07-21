@@ -74,6 +74,8 @@ public:
     bool has_points;
     bool has_normals;
     bool has_colors;
+    bool has_curvatures;
+    bool has_principal_curvatures;
 };
 
 bool CheckHeader(PCDHeader &header)
@@ -89,6 +91,8 @@ bool CheckHeader(PCDHeader &header)
     header.has_points = false;
     header.has_normals = false;
     header.has_colors = false;
+    header.has_curvatures = false;
+    header.has_principal_curvatures = false;
     bool has_x = false;
     bool has_y = false;
     bool has_z = false;
@@ -97,6 +101,12 @@ bool CheckHeader(PCDHeader &header)
     bool has_normal_z = false;
     bool has_rgb = false;
     bool has_rgba = false;
+    bool has_curvatures = false;
+    bool has_principal_curvature_x = false;
+    bool has_principal_curvature_y = false;
+    bool has_principal_curvature_z = false;
+    bool has_pc1 = false;
+    bool has_pc2 = false;
     for (const auto &field : header.fields) {
         if (field.name == "x") {
             has_x = true;
@@ -114,11 +124,25 @@ bool CheckHeader(PCDHeader &header)
             has_rgb = true;
         } else if (field.name == "rgba") {
             has_rgba = true;
+        } else if (field.name == "curvature") {
+            has_curvatures = true;
+        } else if (field.name == "principal_curvature_x") {
+            has_principal_curvature_x = true;
+        } else if (field.name == "principal_curvature_y") {
+            has_principal_curvature_y = true;
+        } else if (field.name == "principal_curvature_z") {
+            has_principal_curvature_z = true;
+        } else if (field.name == "pc1") {
+            has_pc1 = true;
+        } else if (field.name == "pc2") {
+            has_pc2 = true;
         }
     }
     header.has_points = (has_x && has_y && has_z);
     header.has_normals = (has_normal_x && has_normal_y && has_normal_z);
     header.has_colors = (has_rgb || has_rgba);
+    header.has_curvatures = has_curvatures;
+    header.has_principal_curvatures = (has_principal_curvature_x && has_principal_curvature_y && has_principal_curvature_z && has_pc1 && has_pc2);
     if (header.has_points == false) {
         PrintDebug("[CheckHeader] Fields for point data are not complete.\n");
         return false;
@@ -346,6 +370,13 @@ bool ReadPCDData(FILE *file, const PCDHeader &header, PointCloud &pointcloud)
     if (header.has_colors) {
         pointcloud.colors_.resize(header.points);
     }
+    if (header.has_curvatures) {
+        pointcloud.curvatures_.resize(header.points);
+    }
+    if (header.has_principal_curvatures) {
+        pointcloud.principal_curvatures_.resize(header.points);
+    }
+
     if (header.datatype == PCD_DATA_ASCII) {
         char line_buffer[DEFAULT_IO_BUFFER_SIZE];
         int idx = 0;
@@ -387,6 +418,42 @@ bool ReadPCDData(FILE *file, const PCDHeader &header, PointCloud &pointcloud)
                     pointcloud.colors_[idx] = UnpackASCIIPCDColor(
                             strs[field.count_offset].c_str(), field.type,
                             field.size);
+                } else if (field.name == "curvature") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.curvatures_[i] = UnpackASCIIPCDElement(
+                            strs[field.count_offset].c_str(), field.type,
+                            field.size);
+                    }
+                } else if (field.name == "principal_curvature_x") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](0) = UnpackASCIIPCDElement(
+                            strs[field.count_offset].c_str(), field.type,
+                            field.size);
+                    }
+                } else if (field.name == "principal_curvature_y") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](1) = UnpackASCIIPCDElement(
+                            strs[field.count_offset].c_str(), field.type,
+                            field.size);
+                    }
+                } else if (field.name == "principal_curvature_z") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](2) = UnpackASCIIPCDElement(
+                            strs[field.count_offset].c_str(), field.type,
+                            field.size);
+                    }
+                } else if (field.name == "pc1") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](3) = UnpackASCIIPCDElement(
+                            strs[field.count_offset].c_str(), field.type,
+                            field.size);
+                    }
+                } else if (field.name == "pc2") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](4) = UnpackASCIIPCDElement(
+                            strs[field.count_offset].c_str(), field.type,
+                            field.size);
+                    }
                 }
             }
             idx++;
@@ -428,7 +495,45 @@ bool ReadPCDData(FILE *file, const PCDHeader &header, PointCloud &pointcloud)
                     pointcloud.colors_[i] = UnpackBinaryPCDColor(
                             buffer.get() + field.offset, field.type,
                             field.size);
-                }
+                } else if (field.name == "curvature") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.curvatures_[i] = UnpackBinaryPCDElement(
+                            buffer.get() + field.offset, field.type,
+                            field.size);
+                    }
+                } else if (field.name == "principal_curvature_x") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](0) = UnpackBinaryPCDElement(
+                            buffer.get() + field.offset, field.type,
+                            field.size);
+                    }
+                } else if (field.name == "principal_curvature_y") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](1) = UnpackBinaryPCDElement(
+                            buffer.get() + field.offset, field.type,
+                            field.size);
+                    }
+                } else if (field.name == "principal_curvature_z") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](2) = UnpackBinaryPCDElement(
+                            buffer.get() + field.offset, field.type,
+                            field.size);
+                    }
+                } else if (field.name == "pc1") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](3) = UnpackBinaryPCDElement(
+                            buffer.get() + field.offset, field.type,
+                            field.size);
+                    }
+                } else if (field.name == "pc2") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](4) = UnpackBinaryPCDElement(
+                            buffer.get() + field.offset, field.type,
+                            field.size);
+                    }
+                } 
+
+
             }
         }
     } else if (header.datatype == PCD_DATA_BINARY_COMPRESSED) {
@@ -505,7 +610,52 @@ bool ReadPCDData(FILE *file, const PCDHeader &header, PointCloud &pointcloud)
                             base_ptr + i * field.size * field.count, field.type,
                             field.size);
                 }
-            }
+            } else if (field.name == "curvature") {
+                for (int i = 0; i < header.points; i++) {
+                    pointcloud.curvatures_[i] = UnpackBinaryPCDElement(
+                        base_ptr + i * field.size * field.count, field.type,
+                        field.size);
+
+                }
+
+
+            } else if (field.name == "principal_curvature_x") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](0) = UnpackBinaryPCDElement(
+                            base_ptr + i * field.size * field.count, field.type,
+                            field.size);
+
+                        //printf("Look %f\n",pointcloud.principal_curvatures_[i](0));
+                    }
+                } else if (field.name == "principal_curvature_y") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](1) = UnpackBinaryPCDElement(
+                            base_ptr + i * field.size * field.count, field.type,
+                            field.size);
+
+                    }
+                } else if (field.name == "principal_curvature_z") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](2) = UnpackBinaryPCDElement(
+                            base_ptr + i * field.size * field.count, field.type,
+                            field.size);
+
+                    }
+                } else if (field.name == "pc1") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](3) = UnpackBinaryPCDElement(
+                            base_ptr + i * field.size * field.count, field.type,
+                            field.size);
+
+                    }
+                } else if (field.name == "pc2") {
+                    for (int i = 0; i < header.points; i++) {
+                        pointcloud.principal_curvatures_[i](4) = UnpackBinaryPCDElement(
+                            base_ptr + i * field.size * field.count, field.type,
+                            field.size);
+
+                    }
+                }
         }
     }
     return true;

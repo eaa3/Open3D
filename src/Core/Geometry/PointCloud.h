@@ -30,14 +30,18 @@
 #include <vector>
 #include <memory>
 #include <Eigen/Core>
+#include <Core/Utility/EigenCustomTypes.h>
 #include <Core/Geometry/Geometry3D.h>
 #include <Core/Geometry/KDTreeSearchParam.h>
+
 
 namespace three {
 
 class Image;
 class RGBDImage;
 class PinholeCameraIntrinsic;
+
+
 
 class PointCloud : public Geometry3D
 {
@@ -69,6 +73,14 @@ public:
         return points_.size() > 0 && colors_.size() == points_.size();
     }
 
+    bool HasCurvatures() const {
+        return points_.size() > 0 && curvatures_.size() == points_.size();
+    }
+
+    bool HasPrincipalCurvatures() const {
+        return points_.size() > 0 && principal_curvatures_.size() == points_.size();
+    }
+
     void NormalizeNormals() {
         for (size_t i = 0; i < normals_.size(); i++) {
             normals_[i].normalize();
@@ -86,6 +98,8 @@ public:
     std::vector<Eigen::Vector3d> points_;
     std::vector<Eigen::Vector3d> normals_;
     std::vector<Eigen::Vector3d> colors_;
+    std::vector<double> curvatures_;
+    std::vector<Eigen::Vector5d> principal_curvatures_;
 };
 
 /// Factory function to create a pointcloud from a file (PointCloudFactory.cpp)

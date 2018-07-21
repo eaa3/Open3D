@@ -29,14 +29,7 @@
 #include <tuple>
 #include <vector>
 #include <Eigen/Core>
-
-namespace Eigen {
-
-/// Extending Eigen namespace by adding frequently used matrix type
-typedef Eigen::Matrix<double, 6, 6> Matrix6d;
-typedef Eigen::Matrix<double, 6, 1> Vector6d;
-
-}    // namespace Eigen
+#include "EigenCustomTypes.h"
 
 namespace three {
 

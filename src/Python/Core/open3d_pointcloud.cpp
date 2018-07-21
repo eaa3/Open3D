@@ -51,10 +51,14 @@ void pybind_pointcloud(py::module &m)
         .def("has_points", &PointCloud::HasPoints)
         .def("has_normals", &PointCloud::HasNormals)
         .def("has_colors", &PointCloud::HasColors)
+        .def("has_curvatures", &PointCloud::HasCurvatures)
+        .def("has_principal_curvatures", &PointCloud::HasPrincipalCurvatures)
         .def("normalize_normals", &PointCloud::NormalizeNormals)
         .def("paint_uniform_color", &PointCloud::PaintUniformColor)
         .def_readwrite("points", &PointCloud::points_)
         .def_readwrite("normals", &PointCloud::normals_)
+        .def_readwrite("curvatures", &PointCloud::curvatures_)
+        .def_readwrite("principal_curvatures", &PointCloud::principal_curvatures_)
         .def_readwrite("colors", &PointCloud::colors_);
 }
 
