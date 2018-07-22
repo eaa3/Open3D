@@ -69,6 +69,7 @@ public:
         YCoordinate = 3,
         ZCoordinate = 4,
         Normal = 9,
+        PrincipalCurvature = 10
     };
 
     // Image options

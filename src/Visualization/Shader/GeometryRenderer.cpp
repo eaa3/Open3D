@@ -134,11 +134,13 @@ bool TriangleMeshRenderer::Render(const RenderOption &option,
     if (is_visible_ == false || geometry_ptr_->IsEmpty()) return true;
     const auto &mesh = (const TriangleMesh &)(*geometry_ptr_);
     bool success = true;
+
     if (mesh.HasTriangleNormals() && mesh.HasVertexNormals()) {
         if (option.mesh_color_option_ ==
                 RenderOption::MeshColorOption::Normal) {
             success &= normal_mesh_shader_.Render(mesh, option, view);
         } else {
+
             success &= phong_mesh_shader_.Render(mesh, option, view);
         }
     } else {

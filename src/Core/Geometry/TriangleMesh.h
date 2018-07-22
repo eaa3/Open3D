@@ -37,7 +37,7 @@ namespace three {
 class TriangleMesh : public Geometry3D
 {
 public:
-    TriangleMesh() : Geometry3D(Geometry::GeometryType::TriangleMesh) {};
+    TriangleMesh() : Geometry3D(Geometry::GeometryType::TriangleMesh), transformation_(Eigen::Matrix4d::Identity()) {};
     ~TriangleMesh() override {};
 
 public:
@@ -59,6 +59,11 @@ public:
 
     /// Function to remove duplicated and non-manifold vertices/triangles
     void Purge();
+
+    void setVertices(const std::vector<Eigen::Vector3d>& vertices);
+    void setNormals(const std::vector<Eigen::Vector3d>& vertex_normals);
+    void setColors(const std::vector<Eigen::Vector3d>& vertex_colors);
+    void setTriangles(const std::vector<Eigen::Vector3i>& triangles);
 
 protected:
     void RemoveDuplicatedVertices();
@@ -112,12 +117,16 @@ public:
         }
     }
 
+    void setTransform(const Eigen::Matrix4d &transformation);
+
 public:
     std::vector<Eigen::Vector3d> vertices_;
     std::vector<Eigen::Vector3d> vertex_normals_;
     std::vector<Eigen::Vector3d> vertex_colors_;
     std::vector<Eigen::Vector3i> triangles_;
     std::vector<Eigen::Vector3d> triangle_normals_;
+
+    Eigen::Matrix4d transformation_;
 };
 
 /// Function to select points from \param input TriangleMesh into
@@ -174,5 +183,11 @@ std::shared_ptr<TriangleMesh> CreateMeshArrow(double cylinder_radius = 1.0,
 /// \param size is the length of the axes.
 std::shared_ptr<TriangleMesh> CreateMeshCoordinateFrame(double size = 1.0,
         const Eigen::Vector3d &origin = Eigen::Vector3d(0.0, 0.0, 0.0));
+
+
+
+std::shared_ptr<TriangleMesh> CreateMeshMeshWithVertices(const std::vector<Eigen::Vector3d>& vertices);
+
+
 
 }   // namespace three

@@ -180,6 +180,8 @@ void Visualizer::KeyPressCallback(GLFWwindow *window,
         }
         PrintDebug("[Visualizer] Point normal rendering %s.\n",
                 render_option_ptr_->point_show_normal_ ? "ON" : "OFF");
+        printf("[Visualizer] Point normal rendering %s.\n",
+                render_option_ptr_->point_show_normal_ ? "ON" : "OFF");
         break;
     case GLFW_KEY_S:
         render_option_ptr_->ToggleShadingOption();

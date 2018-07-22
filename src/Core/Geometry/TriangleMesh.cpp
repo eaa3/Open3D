@@ -182,6 +182,35 @@ void TriangleMesh::Purge()
     RemoveNonManifoldVertices();
 }
 
+void TriangleMesh::setVertices(const std::vector<Eigen::Vector3d>& vertices){
+
+    vertices_ = vertices;
+
+}
+
+void TriangleMesh::setNormals(const std::vector<Eigen::Vector3d>& vertex_normals){
+
+    vertex_normals_ = vertex_normals;
+
+}
+
+void TriangleMesh::setColors(const std::vector<Eigen::Vector3d>& vertex_colors){
+
+    vertex_colors_ = vertex_colors;
+
+}
+
+void TriangleMesh::setTriangles(const std::vector<Eigen::Vector3i>& triangles){
+
+    triangles_ = triangles;
+
+}
+
+void TriangleMesh::setTransform(const Eigen::Matrix4d &transformation){
+
+    transformation_ = transformation;
+}
+
 void TriangleMesh::RemoveDuplicatedVertices()
 {
     typedef std::tuple<double, double, double> Coordinate3;

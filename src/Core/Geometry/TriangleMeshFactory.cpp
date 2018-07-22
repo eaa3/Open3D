@@ -226,4 +226,19 @@ std::shared_ptr<TriangleMesh> CreateMeshCoordinateFrame(double size/* = 1.0*/,
     return mesh_frame;
 }
 
+std::shared_ptr<TriangleMesh> CreateMeshMeshWithVertices(const std::vector<Eigen::Vector3d>& vertices) {
+
+    auto mesh_ptr = std::make_shared<TriangleMesh>();
+
+    mesh_ptr->vertices_.resize(vertices.size());
+    for(int i = 0; i < vertices.size(); i++){
+        mesh_ptr->vertices_[i] = vertices[i];
+    }
+
+    return mesh_ptr;
+    
+
+}
+
+
 }    // namespace three

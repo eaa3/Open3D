@@ -95,7 +95,15 @@ bool SimpleShader::RenderGeometry(const Geometry &geometry,
         return false;
     }
     glUseProgram(program_);
-    glUniformMatrix4fv(MVP_, 1, GL_FALSE, view.GetMVPMatrix().data());
+
+    GLHelper::GLMatrix4f view_matrix;
+    if( geometry.GetGeometryType() == Geometry::GeometryType::TriangleMesh) {
+        const auto &mesh = (const TriangleMesh &)geometry;
+        const Eigen::Matrix4d& t = mesh.transformation_;
+        view_matrix = view.GetMVPMatrix()*t.cast<GLfloat>();
+    }
+
+    glUniformMatrix4fv(MVP_, 1, GL_FALSE, view_matrix.data());
     glEnableVertexAttribArray(vertex_position_);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_position_buffer_);
     glVertexAttribPointer(vertex_position_, 3, GL_FLOAT, GL_FALSE, 0, NULL);

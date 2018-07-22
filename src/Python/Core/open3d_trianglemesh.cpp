@@ -54,6 +54,20 @@ void pybind_trianglemesh(py::module &m)
                 "normalized"_a = true)
         .def("purge", &TriangleMesh::Purge,
                 "Function to remove duplicated and non-manifold vertices/triangles")
+        .def("set_vertices", &TriangleMesh::setVertices, 
+            "Function to set vertices",
+            "vertices"_a = std::vector<Eigen::Vector3d>())
+        .def("set_normals", &TriangleMesh::setNormals,
+            "Function to set normals",
+            "vertex_normals"_a = std::vector<Eigen::Vector3d>())
+        .def("set_colors", &TriangleMesh::setColors,
+            "Function to set vertex colors",
+            "vertex_colors"_a = std::vector<Eigen::Vector3d>())
+        .def("set_triangles", &TriangleMesh::setTriangles,
+            "triangles"_a = std::vector<Eigen::Vector3i>())
+        .def("set_transform",&TriangleMesh::setTransform,
+            "Function to set transformation/pose/model_transform of mesh model",
+            "transformation"_a = Eigen::Matrix4d::Identity())
         .def("has_vertices", &TriangleMesh::HasVertices)
         .def("has_triangles", &TriangleMesh::HasTriangles)
         .def("has_vertex_normals", &TriangleMesh::HasVertexNormals)
@@ -105,4 +119,10 @@ void pybind_trianglemesh_methods(py::module &m)
     m.def("create_mesh_coordinate_frame", &CreateMeshCoordinateFrame,
             "Factory function to create a coordinate frame mesh",
             "size"_a = 1.0, "origin"_a = Eigen::Vector3d(0.0, 0.0, 0.0));
+
+  //  std::shared_ptr<TriangleMesh> CreateMeshMeshWithVertices(const std::vector<Eigen::Vector3d>& vertices);
+
+    m.def("create_mesh_with_vertices", &CreateMeshMeshWithVertices,
+            "Factory function to create a Mesh from vertices",
+            "vertices"_a = std::vector<Eigen::Vector3d>());
 }
