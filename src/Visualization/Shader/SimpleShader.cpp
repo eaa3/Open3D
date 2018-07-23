@@ -96,7 +96,7 @@ bool SimpleShader::RenderGeometry(const Geometry &geometry,
     }
     glUseProgram(program_);
 
-    GLHelper::GLMatrix4f view_matrix;
+    GLHelper::GLMatrix4f view_matrix = view.GetMVPMatrix();
     if( geometry.GetGeometryType() == Geometry::GeometryType::TriangleMesh) {
         const auto &mesh = (const TriangleMesh &)geometry;
         const Eigen::Matrix4d& t = mesh.transformation_;

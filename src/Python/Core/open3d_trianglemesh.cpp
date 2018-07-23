@@ -54,20 +54,6 @@ void pybind_trianglemesh(py::module &m)
                 "normalized"_a = true)
         .def("purge", &TriangleMesh::Purge,
                 "Function to remove duplicated and non-manifold vertices/triangles")
-        .def("set_vertices", &TriangleMesh::setVertices, 
-            "Function to set vertices",
-            "vertices"_a = std::vector<Eigen::Vector3d>())
-        .def("set_normals", &TriangleMesh::setNormals,
-            "Function to set normals",
-            "vertex_normals"_a = std::vector<Eigen::Vector3d>())
-        .def("set_colors", &TriangleMesh::setColors,
-            "Function to set vertex colors",
-            "vertex_colors"_a = std::vector<Eigen::Vector3d>())
-        .def("set_triangles", &TriangleMesh::setTriangles,
-            "triangles"_a = std::vector<Eigen::Vector3i>())
-        .def("set_transform",&TriangleMesh::setTransform,
-            "Function to set transformation/pose/model_transform of mesh model",
-            "transformation"_a = Eigen::Matrix4d::Identity())
         .def("has_vertices", &TriangleMesh::HasVertices)
         .def("has_triangles", &TriangleMesh::HasTriangles)
         .def("has_vertex_normals", &TriangleMesh::HasVertexNormals)
@@ -79,7 +65,8 @@ void pybind_trianglemesh(py::module &m)
         .def_readwrite("vertex_normals", &TriangleMesh::vertex_normals_)
         .def_readwrite("vertex_colors", &TriangleMesh::vertex_colors_)
         .def_readwrite("triangles", &TriangleMesh::triangles_)
-        .def_readwrite("triangle_normals", &TriangleMesh::triangle_normals_);
+        .def_readwrite("triangle_normals", &TriangleMesh::triangle_normals_)
+        .def_readwrite("transformation", &TriangleMesh::transformation_);
 }
 
 void pybind_trianglemesh_methods(py::module &m)

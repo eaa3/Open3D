@@ -197,9 +197,11 @@ void ViewControl::Reset()
 {
     field_of_view_ = FIELD_OF_VIEW_DEFAULT;
     zoom_ = ZOOM_DEFAULT;
-    lookat_ = bounding_box_.GetCenter();
-    up_ = Eigen::Vector3d(0.0, 1.0, 0.0);
-    front_ = Eigen::Vector3d(0.0, 0.0, 1.0);
+
+    
+    lookat_ = Eigen::Vector3d( 0.04, -0.23, 0.06);
+    up_ = Eigen::Vector3d(0.0, 0.0, 1.0);
+    front_ = Eigen::Vector3d(0.92, -0.08, 0.39);
     SetProjectionParameters();
 }
 
@@ -208,17 +210,20 @@ void ViewControl::SetProjectionParameters()
     front_ = front_.normalized();
     right_ = up_.cross(front_).normalized();
     up_ = front_.cross(right_).normalized();
-    if (GetProjectionType() == ProjectionType::Perspective) {
-        view_ratio_ = zoom_ * bounding_box_.GetSize();
-        distance_ = view_ratio_ /
-                std::tan(field_of_view_ * 0.5 / 180.0 * M_PI);
-        eye_ = lookat_ + front_ * distance_;
-    } else {
-        view_ratio_ = zoom_ * bounding_box_.GetSize();
-        distance_ = view_ratio_ /
-                std::tan(FIELD_OF_VIEW_STEP * 0.5 / 180.0 * M_PI);
-        eye_ = lookat_ + front_ * distance_;
-    }
+
+    eye_ = lookat_ + front_;
+
+    // if (GetProjectionType() == ProjectionType::Perspective) {
+    //     view_ratio_ = zoom_ * bounding_box_.GetSize();
+    //     distance_ = view_ratio_ /
+    //             std::tan(field_of_view_ * 0.5 / 180.0 * M_PI);
+    //     eye_ = lookat_ + front_ * distance_;
+    // } else {
+    //     view_ratio_ = zoom_ * bounding_box_.GetSize();
+    //     distance_ = view_ratio_ /
+    //             std::tan(FIELD_OF_VIEW_STEP * 0.5 / 180.0 * M_PI);
+    //     eye_ = lookat_ + front_ * distance_;
+    // }
 }
 
 void ViewControl::ChangeFieldOfView(double step)
@@ -264,6 +269,33 @@ void ViewControl::Translate(double x, double y,
     eye_ += shift;
     lookat_ += shift;
     SetProjectionParameters();
+}
+
+void ViewControl::TranslateView(double x, double y, double z)
+{
+    Eigen::Vector3d translation = x*right_ + y*up_ + z*front_;
+
+    eye_ += translation;
+    lookat_ = eye_ - front_;
+    SetProjectionParameters();
+}
+
+void ViewControl::RotateView(double theta, double phi)
+{
+
+
+        right_(0) = std::cos(phi);
+        right_(1) = std::sin(phi);
+        right_(2) = 0;
+
+        up_(0) = std::sin(phi)*std::sin(theta);
+        up_(1) = -std::cos(phi)*std::sin(theta);
+        up_(2) = std::cos(theta);
+
+        front_ = right_.cross(up_).normalized();
+
+        lookat_ = eye_ - front_;
+
 }
 
 }    // namespace three

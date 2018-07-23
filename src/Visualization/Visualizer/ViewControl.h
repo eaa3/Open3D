@@ -101,6 +101,16 @@ public:
     virtual void Translate(double x, double y, double xo = 0.0,
             double yo = 0.0);
 
+
+    // Function to process translation of the camera view position
+    /// \param x, \param y and \param z are the distances the eye cursor has moved in space.
+    virtual void TranslateView(double x, double y, double z);
+
+    // Function to process spherical view rotation of the camera eye position
+    /// \param x, \param y and \param z are the distances the eye cursor has moved in space.
+    virtual void RotateView(double theta, double phi);
+
+
     const BoundingBox &GetBoundingBox() const {
         return bounding_box_;
     }

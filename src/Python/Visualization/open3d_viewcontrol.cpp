@@ -53,9 +53,14 @@ void pybind_viewcontrol(py::module &m)
                 "scale"_a)
         .def("rotate", &ViewControl::Rotate, "Function to process rotation",
                 "x"_a, "y"_a, "xo"_a = 0.0, "yo"_a = 0.0)
+        .def("rotate_view", &ViewControl::RotateView, "Function to process view rotation",
+                "beta"_a, "phi"_a)
         .def("translate", &ViewControl::Translate,
                 "Function to process translation",
                 "x"_a, "y"_a, "xo"_a = 0.0, "yo"_a = 0.0)
+        .def("translate_view", &ViewControl::TranslateView,
+                "Function to process view translation",
+                "x"_a, "y"_a, "z"_a)
         .def("get_field_of_view", &ViewControl::GetFieldOfView,
                 "Function to get field of view")
         .def("change_field_of_view", &ViewControl::ChangeFieldOfView,
