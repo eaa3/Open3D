@@ -112,9 +112,19 @@ bool PhongShader::RenderGeometry(const Geometry &geometry,
         return false;
     }
     glUseProgram(program_);
-    glUniformMatrix4fv(MVP_, 1, GL_FALSE, view.GetMVPMatrix().data());
+
+    GLHelper::GLMatrix4f view_matrix = view.GetMVPMatrix();
+    GLHelper::GLMatrix4f model_matrix = view.GetModelMatrix();
+    if( geometry.GetGeometryType() == Geometry::GeometryType::TriangleMesh) {
+        const auto &mesh = (const TriangleMesh &)geometry;
+        const Eigen::Matrix4d& t = mesh.transformation_;
+        model_matrix = t.cast<GLfloat>();
+        view_matrix = view.GetMVPMatrix()*t.cast<GLfloat>();
+    }
+
+    glUniformMatrix4fv(MVP_, 1, GL_FALSE, view_matrix.data());
     glUniformMatrix4fv(V_, 1, GL_FALSE, view.GetViewMatrix().data());
-    glUniformMatrix4fv(M_, 1, GL_FALSE, view.GetModelMatrix().data());
+    glUniformMatrix4fv(M_, 1, GL_FALSE, model_matrix.data());
     glUniformMatrix4fv(light_position_world_, 1, GL_FALSE,
             light_position_world_data_.data());
     glUniformMatrix4fv(light_color_, 1, GL_FALSE, light_color_data_.data());
