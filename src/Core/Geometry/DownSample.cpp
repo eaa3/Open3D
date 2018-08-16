@@ -61,6 +61,14 @@ public:
         if (cloud.HasColors()) {
             color_ += cloud.colors_[index];
         }
+
+        if (cloud.HasCurvatures()) {
+            curvature_ += cloud.curvatures_[index];
+        }
+
+        if (cloud.HasPrincipalCurvatures()) {
+            principal_curvature_ += cloud.principal_curvatures_[index];
+        }
         num_of_points_++;
     }
 
@@ -79,11 +87,24 @@ public:
         return color_ / double(num_of_points_);
     }
 
+    double GetAverageCurvature() const
+    {
+        return curvature_ / double(num_of_points_);
+    }
+
+    Eigen::Vector5d GetAveragePrincipalCurvature() const
+    {
+        return principal_curvature_ / double(num_of_points_);
+    }
+
 private:
     int num_of_points_;
     Eigen::Vector3d point_;
     Eigen::Vector3d normal_;
     Eigen::Vector3d color_;
+
+    double curvature_;
+    Eigen::Vector5d principal_curvature_;
 };
 
 }    // unnamed namespace
@@ -205,6 +226,8 @@ std::shared_ptr<PointCloud> VoxelDownSample(const PointCloud &input,
     }
     bool has_normals = input.HasNormals();
     bool has_colors = input.HasColors();
+    bool has_curvatures = input.HasCurvatures();
+    bool has_principal_curvatures = input.HasPrincipalCurvatures();
     for (auto accpoint : voxelindex_to_accpoint) {
         output->points_.push_back(accpoint.second.GetAveragePoint());
         if (has_normals) {
@@ -212,6 +235,12 @@ std::shared_ptr<PointCloud> VoxelDownSample(const PointCloud &input,
         }
         if (has_colors) {
             output->colors_.push_back(accpoint.second.GetAverageColor());
+        }
+        if (has_curvatures) {
+            output->curvatures_.push_back(accpoint.second.GetAverageCurvature());
+        }
+        if (has_principal_curvatures) {
+            output->principal_curvatures_.push_back(accpoint.second.GetAveragePrincipalCurvature());
         }
     }
     PrintDebug("Pointcloud down sampled from %d points to %d points.\n",
