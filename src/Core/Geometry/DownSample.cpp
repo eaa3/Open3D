@@ -43,8 +43,13 @@ public:
             num_of_points_(0),
             point_(0.0, 0.0, 0.0),
             normal_(0.0, 0.0, 0.0),
-            color_(0.0, 0.0, 0.0)
+            color_(0.0, 0.0, 0.0),
+            curvature_(0.0)
+
     {
+        for(int i = 0; i < 5; i++){
+            principal_curvature_(i) = 0.0;
+        }
     }
 
 public:
@@ -63,11 +68,20 @@ public:
         }
 
         if (cloud.HasCurvatures()) {
-            curvature_ += cloud.curvatures_[index];
+            if(!std::isnan(cloud.curvatures_[index]))
+                curvature_ += cloud.curvatures_[index];
         }
 
         if (cloud.HasPrincipalCurvatures()) {
-            principal_curvature_ += cloud.principal_curvatures_[index];
+
+            if (!std::isnan(cloud.principal_curvatures_[index](0)) &&
+                    !std::isnan(cloud.principal_curvatures_[index](1)) &&
+                    !std::isnan(cloud.principal_curvatures_[index](2)) &&
+                    !std::isnan(cloud.principal_curvatures_[index](3)) &&
+                    !std::isnan(cloud.principal_curvatures_[index](4))) {
+                principal_curvature_ += cloud.principal_curvatures_[index];
+            }
+            
         }
         num_of_points_++;
     }
