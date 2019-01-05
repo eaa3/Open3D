@@ -231,9 +231,11 @@ void pybind_eigen(py::module &m)
     pybind_eigen_vector_of_scalar<int>(m, "IntVector");
     pybind_eigen_vector_of_scalar<double>(m, "DoubleVector");
     pybind_eigen_vector_of_vector<Eigen::Vector3d>(m, "Vector3dVector",
-            "std::vector<Eigen::Vector3d>");
+            "std::vector<Eigen::Vector3d>",
+            py::py_array_to_vectors_double<Eigen::Vector3d>);
     pybind_eigen_vector_of_vector<Eigen::Vector5d>(m, "Vector5dVector",
-            "std::vector<Eigen::Vector5d>");
+            "std::vector<Eigen::Vector5d>",
+            py::py_array_to_vectors_double<Eigen::Vector5d>);
     pybind_eigen_vector_of_vector<Eigen::Vector3i>(m, "Vector3iVector",
             "std::vector<Eigen::Vector3i>",
             py::py_array_to_vectors_int<Eigen::Vector3i>);

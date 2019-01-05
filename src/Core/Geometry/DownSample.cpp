@@ -113,7 +113,7 @@ public:
         return principal_curvature_ / double(num_of_points_);
     }
 
-private:
+public:
     int num_of_points_;
     Eigen::Vector3d point_;
     Eigen::Vector3d normal_;
