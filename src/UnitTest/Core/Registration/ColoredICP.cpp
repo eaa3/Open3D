@@ -24,9 +24,20 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
-#include "UnitTest.h"
+#include "Utility/UnitTest.h"
 
-TEST(ColoredICP, Default)
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(ColoredICP, DISABLED_RegistrationColoredICP)
 {
-    NotImplemented();
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(ColoredICP, DISABLED_ICPConvergenceCriteria)
+{
+    unit_test::NotImplemented();
 }

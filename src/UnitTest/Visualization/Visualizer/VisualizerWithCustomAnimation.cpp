@@ -24,9 +24,108 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
-#include "UnitTest.h"
+#include "Utility/UnitTest.h"
 
-TEST(VisualizerWithCustomAnimation, Default)
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_Constructor)
 {
-    NotImplemented();
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_Destructor)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_MemberData)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_PrintVisualizerHelp)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_UpdateWindowTitle)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_Play)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_RegisterRecordingImageFormat)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_RegisterRecordingDepthFormat)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_InitViewControl)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_MouseMoveCallback)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_MouseScrollCallback)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_MouseButtonCallback)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithCustomAnimation, DISABLED_KeyPressCallback)
+{
+    unit_test::NotImplemented();
 }

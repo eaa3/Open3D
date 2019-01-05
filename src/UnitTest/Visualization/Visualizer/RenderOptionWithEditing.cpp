@@ -24,9 +24,60 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
-#include "UnitTest.h"
+#include "Utility/UnitTest.h"
 
-TEST(RenderOptionWithEditing, Default)
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(RenderOptionWithEditing, DISABLED_Constructor)
 {
-    NotImplemented();
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(RenderOptionWithEditing, DISABLED_Destructor)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(RenderOptionWithEditing, DISABLED_MemberData)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(RenderOptionWithEditing, DISABLED_ConvertToJsonValue)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(RenderOptionWithEditing, DISABLED_ConvertFromJsonValue)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(RenderOptionWithEditing, DISABLED_IncreaseSphereSize)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(RenderOptionWithEditing, DISABLED_DecreaseSphereSize)
+{
+    unit_test::NotImplemented();
 }

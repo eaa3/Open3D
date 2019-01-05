@@ -30,7 +30,7 @@
 #include <Core/Geometry/PointCloud.h>
 #include <Core/Utility/Eigen.h>
 
-namespace three{
+namespace open3d{
 
 double TransformationEstimationPointToPoint::ComputeRMSE(
         const PointCloud &source, const PointCloud &target,
@@ -67,7 +67,7 @@ double TransformationEstimationPointToPlane::ComputeRMSE(
     for (const auto &c : corres) {
         r = (source.points_[c[0]] - target.points_[c[1]]).dot(
                 target.normals_[c[1]]);
-        err = r * r;
+        err += r * r;
     }
     return std::sqrt(err / (double)corres.size());
 }
@@ -91,7 +91,8 @@ Eigen::Matrix4d TransformationEstimationPointToPlane::ComputeTransformation(
 
     Eigen::Matrix6d JTJ;
     Eigen::Vector6d JTr;
-    std::tie(JTJ, JTr) = ComputeJTJandJTr<Eigen::Matrix6d, Eigen::Vector6d>(
+    double r2;
+    std::tie(JTJ, JTr, r2) = ComputeJTJandJTr<Eigen::Matrix6d, Eigen::Vector6d>(
             compute_jacobian_and_residual, (int)corres.size());
 
     bool is_success;
@@ -102,4 +103,4 @@ Eigen::Matrix4d TransformationEstimationPointToPlane::ComputeTransformation(
     return is_success ? extrinsic : Eigen::Matrix4d::Identity();
 }
 
-}    // namespace three
+}    // namespace open3d

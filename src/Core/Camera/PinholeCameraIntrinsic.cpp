@@ -30,9 +30,10 @@
 #include <json/json.h>
 #include <Core/Utility/Console.h>
 
-namespace three{
+namespace open3d{
 
-PinholeCameraIntrinsic::PinholeCameraIntrinsic()
+PinholeCameraIntrinsic::PinholeCameraIntrinsic() : width_(-1), height_(-1),
+    intrinsic_matrix_(Eigen::Matrix3d::Zero())
 {
 }
 
@@ -86,4 +87,4 @@ bool PinholeCameraIntrinsic::ConvertFromJsonValue(const Json::Value &value)
     return true;
 }
 
-}    // namespace three
+}    // namespace open3d

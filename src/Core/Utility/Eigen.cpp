@@ -29,7 +29,7 @@
 #include <Eigen/Geometry>
 #include <Core/Utility/Console.h>
 
-namespace three{
+namespace open3d{
 
 /// Function to solve Ax=b
 std::tuple<bool, Eigen::VectorXd> SolveLinearSystem(
@@ -46,8 +46,8 @@ std::tuple<bool, Eigen::VectorXd> SolveLinearSystem(
             Eigen::MatrixXd x = A.ldlt().solve(b);
             return std::make_tuple(solution_exist, std::move(x));
         } else {
-            return std::make_tuple(false,
-                    std::move(Eigen::VectorXd::Zero(b.rows())));
+            return std::make_tuple(false, Eigen::VectorXd::Zero(b.rows()));
+                    
         }
     } else {
         Eigen::MatrixXd x = A.ldlt().solve(b);
@@ -101,7 +101,7 @@ std::tuple<bool, Eigen::Matrix4d>
         return std::make_tuple(solution_exist, std::move(extrinsic));
     }
     else {
-        return std::make_tuple(false, std::move(Eigen::Matrix4d::Identity()));
+        return std::make_tuple(false, Eigen::Matrix4d::Identity());
     }
 }
 
@@ -135,9 +135,9 @@ std::tuple<bool, std::vector<Eigen::Matrix4d>>
 }
 
 template<typename MatType, typename VecType>
-std::tuple<MatType, VecType> ComputeJTJandJTr(
+std::tuple<MatType, VecType, double> ComputeJTJandJTr(
         std::function<void(int, VecType &, double &)> f,
-        int iteration_num)
+        int iteration_num, bool verbose/*=true*/)
 {
     MatType JTJ;
     VecType JTr;
@@ -175,16 +175,17 @@ std::tuple<MatType, VecType> ComputeJTJandJTr(
         }
     }
 #endif
-    r2_sum /= (double)iteration_num;
-    PrintDebug("Residual : %.2e (# of elements : %d)\n", r2_sum,
-            iteration_num);
-    return std::make_tuple(std::move(JTJ), std::move(JTr));
+    if (verbose) {
+        PrintDebug("Residual : %.2e (# of elements : %d)\n",
+                r2_sum/(double)iteration_num, iteration_num);
+    }
+    return std::make_tuple(std::move(JTJ), std::move(JTr), r2_sum);
 }
 
 template<typename MatType, typename VecType>
-std::tuple<MatType, VecType> ComputeJTJandJTr(
+std::tuple<MatType, VecType, double> ComputeJTJandJTr(
         std::function<void(int, std::vector<VecType> &, std::vector<double> &)> f,
-        int iteration_num)
+        int iteration_num, bool verbose/*=true*/)
 {
     MatType JTJ;
     VecType JTr;
@@ -224,18 +225,19 @@ std::tuple<MatType, VecType> ComputeJTJandJTr(
         }
     }
 #endif
-    r2_sum /= (double)iteration_num;
-    PrintDebug("Residual : %.2e (# of elements : %d)\n", r2_sum,
-            iteration_num);
-    return std::make_tuple(std::move(JTJ), std::move(JTr));
+    if (verbose) {
+        PrintDebug("Residual : %.2e (# of elements : %d)\n",
+                r2_sum/(double)iteration_num, iteration_num);
+    }
+    return std::make_tuple(std::move(JTJ), std::move(JTr), r2_sum);
 }
 
-template std::tuple<Eigen::Matrix6d, Eigen::Vector6d> ComputeJTJandJTr(
+template std::tuple<Eigen::Matrix6d, Eigen::Vector6d, double> ComputeJTJandJTr(
         std::function<void(int, Eigen::Vector6d &, double &)> f,
-        int iteration_num);
+        int iteration_num, bool verbose);
 
-template std::tuple<Eigen::Matrix6d, Eigen::Vector6d> ComputeJTJandJTr(
+template std::tuple<Eigen::Matrix6d, Eigen::Vector6d, double> ComputeJTJandJTr(
         std::function<void(int, std::vector<Eigen::Vector6d> &,
-        std::vector<double> &)> f, int iteration_num);
+        std::vector<double> &)> f, int iteration_num, bool verbose);
 
-}    // namespace three
+}    // namespace open3d

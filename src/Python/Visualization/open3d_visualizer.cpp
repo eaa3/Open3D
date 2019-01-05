@@ -32,7 +32,7 @@
 #include <Visualization/Visualizer/VisualizerWithKeyCallback.h>
 #include <Visualization/Visualizer/VisualizerWithEditing.h>
 
-using namespace three;
+using namespace open3d;
 
 void pybind_visualizer(py::module &m)
 {
@@ -46,7 +46,7 @@ void pybind_visualizer(py::module &m)
         .def("create_window", &Visualizer::CreateVisualizerWindow,
                 "Function to create a window and initialize GLFW",
                 "window_name"_a = "Open3D", "width"_a = 1920, "height"_a = 1080,
-                "left"_a = 50, "right"_a = 50)
+                "left"_a = 50, "top"_a = 50, "visible"_a = true)
         .def("destroy_window", &Visualizer::DestroyVisualizerWindow,
                 "Function to destroy a window")
         .def("register_animation_callback",
@@ -106,6 +106,7 @@ void pybind_visualizer(py::module &m)
     py::detail::bind_default_constructor<VisualizerWithEditing>(
             visualizer_edit);
     visualizer_edit
+        .def(py::init<double, bool, const std::string &>())
         .def("__repr__", [](const VisualizerWithEditing &vis) {
             return std::string("VisualizerWithEditing with name ") +
                     vis.GetWindowName();

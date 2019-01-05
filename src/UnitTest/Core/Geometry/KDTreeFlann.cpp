@@ -24,9 +24,160 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
-#include "UnitTest.h"
+#include "Utility/UnitTest.h"
 
-TEST(KDTreeFlann, Default)
+#include "Core/Geometry/PointCloud.h"
+#include "Core/Geometry/TriangleMesh.h"
+#include "Core/Geometry/KDTreeFlann.h"
+
+using namespace Eigen;
+using namespace open3d;
+using namespace std;
+using namespace unit_test;
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(KDTreeFlann, DISABLED_Search)
 {
-    NotImplemented();
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(KDTreeFlann, SearchKNN)
+{
+    vector<int> ref_indices =
+    {
+            27,    48,     4,    77,    90,     7,    54,    17,    76,    38,
+            39,    60,    15,    84,    11,    57,     3,    32,    99,    36,
+            52,    40,    26,    59,    22,    97,    20,    42,    73,    24
+    };
+
+    vector<double> ref_distance2 =
+    {
+            0.000000,    4.684353,    4.996539,    9.191849,   10.034604,
+           10.466745,   10.649751,   11.434066,   12.089195,   13.345638,
+           13.696270,   14.016148,   16.851978,   17.073435,   18.254518,
+           20.019994,   21.496347,   23.077277,   23.692427,   23.809303,
+           24.104578,   25.005770,   26.952710,   27.487888,   27.998463,
+           28.262975,   28.581313,   28.816608,   31.603230,   31.610916
+    };
+
+    int size = 100;
+
+    PointCloud pc;
+
+    Vector3d vmin(0.0, 0.0, 0.0);
+    Vector3d vmax(10.0, 10.0, 10.0);
+
+    pc.points_.resize(size);
+    Rand(pc.points_, vmin, vmax, 0);
+
+    KDTreeFlann kdtree(pc);
+
+    Vector3d query = { 1.647059, 4.392157, 8.784314 };
+    int knn = 30;
+    vector<int> indices;
+    vector<double> distance2;
+
+    int result = kdtree.SearchKNN(query, knn, indices, distance2);
+
+    EXPECT_EQ(result, 30);
+
+    ExpectEQ(ref_indices, indices);
+    ExpectEQ(ref_distance2, distance2);
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(KDTreeFlann, SearchRadius)
+{
+    vector<int> ref_indices =
+    {
+            27,    48,     4,    77,    90,     7,    54,    17,    76,    38,
+            39,    60,    15,    84,    11,    57,     3,    32,    99,    36,
+            52
+    };
+
+    vector<double> ref_distance2 =
+    {
+            0.000000,    4.684353,    4.996539,    9.191849,   10.034604,
+           10.466745,   10.649751,   11.434066,   12.089195,   13.345638,
+           13.696270,   14.016148,   16.851978,   17.073435,   18.254518,
+           20.019994,   21.496347,   23.077277,   23.692427,   23.809303,
+           24.104578
+    };
+
+    int size = 100;
+
+    PointCloud pc;
+
+    Vector3d vmin(0.0, 0.0, 0.0);
+    Vector3d vmax(10.0, 10.0, 10.0);
+
+    pc.points_.resize(size);
+    Rand(pc.points_, vmin, vmax, 0);
+
+    KDTreeFlann kdtree(pc);
+
+    Vector3d query = { 1.647059, 4.392157, 8.784314 };
+    double radius = 5.0;
+    vector<int> indices;
+    vector<double> distance2;
+
+    int result = kdtree.SearchRadius<Vector3d>(query, radius,
+                                               indices, distance2);
+
+    EXPECT_EQ(result, 21);
+
+    ExpectEQ(ref_indices, indices);
+    ExpectEQ(ref_distance2, distance2);
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(KDTreeFlann, SearchHybrid)
+{
+    vector<int> ref_indices =
+    {
+            27,    48,     4,    77,    90,     7,    54,    17,    76,    38,
+            39,    60,    15,    84,    11
+    };
+
+    vector<double> ref_distance2 =
+    {
+            0.000000,    4.684353,    4.996539,    9.191849,   10.034604,
+           10.466745,   10.649751,   11.434066,   12.089195,   13.345638,
+           13.696270,   14.016148,   16.851978,   17.073435,   18.254518
+    };
+
+    int size = 100;
+
+    PointCloud pc;
+
+    Vector3d vmin(0.0, 0.0, 0.0);
+    Vector3d vmax(10.0, 10.0, 10.0);
+
+    pc.points_.resize(size);
+    Rand(pc.points_, vmin, vmax, 0);
+
+    KDTreeFlann kdtree(pc);
+
+    Vector3d query = { 1.647059, 4.392157, 8.784314 };
+    int max_nn = 15;
+    double radius = 5.0;
+    vector<int> indices;
+    vector<double> distance2;
+
+    int result = kdtree.SearchHybrid<Vector3d>(query, radius, max_nn,
+                                               indices, distance2);
+
+    EXPECT_EQ(result, 15);
+
+    ExpectEQ(ref_indices, indices);
+    ExpectEQ(ref_distance2, distance2);
 }

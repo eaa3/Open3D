@@ -28,10 +28,11 @@
 
 #include "ClassIO/PointCloudIO.h"
 #include "ClassIO/TriangleMeshIO.h"
+#include "ClassIO/LineSetIO.h"
 #include "ClassIO/ImageIO.h"
 #include "ClassIO/PinholeCameraTrajectoryIO.h"
 #include "ClassIO/IJsonConvertibleIO.h"
 #include "ClassIO/FeatureIO.h"
 #include "ClassIO/PoseGraphIO.h"
 
-#include "../open3d_config.h"
+#include "../Open3DConfig.h"

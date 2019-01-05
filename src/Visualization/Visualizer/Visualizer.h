@@ -39,7 +39,7 @@
 #include <Visualization/Visualizer/RenderOption.h>
 #include <Visualization/Shader/GeometryRenderer.h>
 
-namespace three {
+namespace open3d {
 
 class TriangleMesh;
 class Image;
@@ -70,7 +70,7 @@ public:
     /// This function MUST be called from the main thread.
     bool CreateVisualizerWindow(const std::string &window_name = "Open3D",
             const int width = 640, const int height = 480,
-            const int left = 50, const int top = 50);
+            const int left = 50, const int top = 50, const bool visible = true);
 
     /// Function to destroy a window
     /// This function MUST be called from the main thread.
@@ -219,4 +219,4 @@ protected:
 #endif //__APPLE__
 };
 
-}    // namespace three
+}    // namespace open3d

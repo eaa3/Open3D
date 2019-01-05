@@ -28,7 +28,7 @@
 
 #include <IO/ClassIO/IJsonConvertibleIO.h>
 
-namespace three{
+namespace open3d{
 
 void ViewControlWithCustomAnimation::Reset()
 {
@@ -268,17 +268,16 @@ bool ViewControlWithCustomAnimation::LoadTrajectoryFromCameraTrajectory(
     current_keyframe_ = 0.0;
     current_frame_ = 0.0;
     view_trajectory_.Reset();
-    if (camera_trajectory.extrinsic_.empty()) {
+    if (camera_trajectory.parameters_.empty()) {
         return false;
     }
     view_trajectory_.interval_ = ViewTrajectory::INTERVAL_MIN;
     view_trajectory_.is_loop_ = false;
-    view_trajectory_.view_status_.resize(camera_trajectory.extrinsic_.size());
-    for (size_t i = 0; i < camera_trajectory.extrinsic_.size(); i++) {
+    view_trajectory_.view_status_.resize(camera_trajectory.parameters_.size());
+    for (size_t i = 0; i < camera_trajectory.parameters_.size(); i++) {
         ViewControlWithCustomAnimation view_control = *this;
         if (view_control.ConvertFromPinholeCameraParameters(
-                camera_trajectory.intrinsic_,
-                camera_trajectory.extrinsic_[i]) == false) {
+                camera_trajectory.parameters_[i]) == false) {
             view_trajectory_.Reset();
             return false;
         }
@@ -353,4 +352,4 @@ void ViewControlWithCustomAnimation::SetViewControlFromTrajectory()
     }
 }
 
-}    // namespace three
+}    // namespace open3d

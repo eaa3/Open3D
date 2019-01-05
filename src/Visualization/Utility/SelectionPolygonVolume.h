@@ -32,10 +32,11 @@
 #include <Eigen/Core>
 #include <Core/Utility/IJsonConvertible.h>
 
-namespace three {
+namespace open3d {
 
 class Geometry;
 class PointCloud;
+class TriangleMesh;
 
 class SelectionPolygonVolume : public IJsonConvertible
 {
@@ -46,10 +47,14 @@ public:
     bool ConvertToJsonValue(Json::Value &value) const override;
     bool ConvertFromJsonValue(const Json::Value &value) override;
     std::shared_ptr<PointCloud> CropPointCloud(const PointCloud &input) const;
+    std::shared_ptr<TriangleMesh> CropTriangleMesh(const TriangleMesh &input) const;
+
 
 private:
     std::shared_ptr<PointCloud> CropPointCloudInPolygon(
             const PointCloud &input) const;
+    std::shared_ptr<TriangleMesh> CropTriangleMeshInPolygon(
+            const TriangleMesh &input) const;
     std::vector<size_t> CropInPolygon(
             const std::vector<Eigen::Vector3d> &input) const;
 
@@ -60,4 +65,4 @@ public:
     double axis_max_ = 0.0;
 };
 
-}   // namespace three
+}   // namespace open3d

@@ -24,9 +24,20 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
-#include "UnitTest.h"
+#include "Utility/UnitTest.h"
 
-TEST(FileXYZRGB, Default)
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(FileXYZRGB, DISABLED_ReadPointCloudFromXYZRGB)
 {
-    NotImplemented();
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(FileXYZRGB, DISABLED_WritePointCloudToXYZRGB)
+{
+    unit_test::NotImplemented();
 }

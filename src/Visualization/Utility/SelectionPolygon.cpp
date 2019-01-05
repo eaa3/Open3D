@@ -34,7 +34,7 @@
 #include <Visualization/Utility/SelectionPolygonVolume.h>
 #include <Visualization/Utility/GLHelper.h>
 
-namespace three{
+namespace open3d{
 
 void SelectionPolygon::Clear()
 {
@@ -132,6 +132,12 @@ std::shared_ptr<TriangleMesh> SelectionPolygon::CropTriangleMesh(
         const TriangleMesh &input, const ViewControl &view)
 {
     if (IsEmpty()) {
+        return std::make_shared<TriangleMesh>();
+    }
+    if (input.HasVertices() && !input.HasTriangles()) {
+        PrintWarning(
+            "TriangleMesh contains vertices, but no triangles; "
+            "cropping will always yield an empty TriangleMesh.\n");
         return std::make_shared<TriangleMesh>();
     }
     switch (polygon_type_) {
@@ -276,4 +282,4 @@ std::vector<size_t> SelectionPolygon::CropInPolygon(
     return output_index;
 }
 
-}    // namespace three
+}    // namespace open3d

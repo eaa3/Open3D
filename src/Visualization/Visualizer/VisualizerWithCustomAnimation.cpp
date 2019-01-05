@@ -34,7 +34,7 @@
 #include <Visualization/Visualizer/ViewControlWithCustomAnimation.h>
 #include <IO/ClassIO/IJsonConvertibleIO.h>
 
-namespace three{
+namespace open3d{
 
 VisualizerWithCustomAnimation::VisualizerWithCustomAnimation()
 {
@@ -119,10 +119,9 @@ void VisualizerWithCustomAnimation::Play(bool recording/* = false*/,
                 recording_file_index_++;
                 if (recording) {
                     if (recording_trajectory) {
-                        Eigen::Matrix4d extrinsic;
-                        view_control.ConvertToPinholeCameraParameters(
-                                trajectory_ptr->intrinsic_, extrinsic);
-                        trajectory_ptr->extrinsic_.push_back(extrinsic);
+                        auto parameter = PinholeCameraParameters();
+                        view_control.ConvertToPinholeCameraParameters(parameter);
+                        trajectory_ptr->parameters_.push_back(parameter);
                     }
                     char buffer[DEFAULT_IO_BUFFER_SIZE];
                     if (recording_depth) {
@@ -306,4 +305,4 @@ void VisualizerWithCustomAnimation::MouseButtonCallback(GLFWwindow* window,
     }
 }
 
-}    // namespace three
+}    // namespace open3d

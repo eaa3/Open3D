@@ -24,9 +24,60 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
-#include "UnitTest.h"
+#include "Utility/UnitTest.h"
 
-TEST(VisualizerWithKeyCallback, Default)
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithKeyCallback, DISABLED_Constructor)
 {
-    NotImplemented();
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithKeyCallback, DISABLED_Destructor)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithKeyCallback, DISABLED_MemberData)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithKeyCallback, DISABLED_PrintVisualizerHelp)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithKeyCallback, DISABLED_RegisterKeyCallback)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithKeyCallback, DISABLED_KeyPressCallback)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(VisualizerWithKeyCallback, DISABLED_PrintKeyToString)
+{
+    unit_test::NotImplemented();
 }

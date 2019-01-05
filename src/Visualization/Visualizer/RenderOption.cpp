@@ -29,7 +29,7 @@
 #include <Core/Utility/Console.h>
 #include <json/json.h>
 
-namespace three{
+namespace open3d{
 
 bool RenderOption::ConvertToJsonValue(Json::Value &value) const
 {
@@ -105,6 +105,8 @@ bool RenderOption::ConvertToJsonValue(Json::Value &value) const
             value["default_mesh_color"]) == false ) {
         return false;
     }
+
+    value["line_width"] = line_width_;
 
     value["image_stretch_option"] = (int)image_stretch_option_;
     value["image_max_depth"] = image_max_depth_;
@@ -214,6 +216,8 @@ bool RenderOption::ConvertFromJsonValue(const Json::Value &value)
         return false;
     }
 
+    line_width_ = value.get("line_width", line_width_).asDouble();
+
     image_stretch_option_ = (ImageStretchOption)value.get(
             "image_stretch_option", (int)image_stretch_option_).asInt();
     image_max_depth_ = value.get("image_max_depth", image_max_depth_).asInt();
@@ -223,4 +227,4 @@ bool RenderOption::ConvertFromJsonValue(const Json::Value &value)
     return true;
 }
 
-}    // namespace three
+}    // namespace open3d

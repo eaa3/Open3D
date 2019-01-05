@@ -27,12 +27,12 @@
 #pragma once
 
 #include <Core/Geometry/Geometry.h>
-#include <Core/Camera/PinholeCameraIntrinsic.h>
+#include <Core/Camera/PinholeCameraParameters.h>
 #include <Visualization/Visualizer/ViewParameters.h>
 #include <Visualization/Utility/BoundingBox.h>
 #include <Visualization/Utility/GLHelper.h>
 
-namespace three {
+namespace open3d {
 
 class ViewControl
 {
@@ -68,11 +68,9 @@ public:
     /// Function to get equivalent pinhole camera parameters (does not support
     /// orthogonal since it is not a real camera view)
     bool ConvertToPinholeCameraParameters(
-            PinholeCameraIntrinsic &intrinsic,
-            Eigen::Matrix4d &extrinsic);
+            PinholeCameraParameters &parameters);
     bool ConvertFromPinholeCameraParameters(
-            const PinholeCameraIntrinsic &intrinsic,
-            const Eigen::Matrix4d &extrinsic);
+            const PinholeCameraParameters &parameters);
 
     ProjectionType GetProjectionType() const;
     void SetProjectionParameters();
@@ -165,4 +163,4 @@ protected:
     GLHelper::GLMatrix4f MVP_matrix_;
 };
 
-}    // namespace three
+}    // namespace open3d

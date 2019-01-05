@@ -1,203 +1,31 @@
-# References:
-# https://cmake.org/cmake/help/v3.0/
-# https://gitlab.kitware.com/cmake/community/wikis/doc/tutorials/
+macro(ADD_OPEN3D_MODULE MODULE_NAME)
+    file(GLOB MODULE_HEADER_FILES "${MODULE_NAME}/*.h")
+    source_group("Header Files\\Open3D\\${PATH}" FILES ${MODULE_HEADER_FILES})
+    file(GLOB MODULE_SOURCE_FILES "${MODULE_NAME}/*.cpp")
+    source_group("Source Files\\Open3D\\${PATH}" FILES ${MODULE_SOURCE_FILES})
+endmacro(ADD_OPEN3D_MODULE)
 
-cmake_minimum_required(VERSION 3.0.0)
-
-if (NOT CMAKE_VERSION VERSION_LESS "3.1")
-    cmake_policy(SET CMP0054 NEW)
-endif()
-
-# central location for specifying the Open3D version
-file(STRINGS "../version.txt" OPEN3D_VERSION_READ)
-foreach(ver ${OPEN3D_VERSION_READ})
-  if (ver MATCHES "OPEN3D_VERSION_(MAJOR|MINOR|PATCH|TWEAK) +([^ ]+)$")
-    set(OPEN3D_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}" CACHE INTERNAL "")
-  endif()
-endforeach()
-string(CONCAT OPEN3D_VERSION "${OPEN3D_VERSION_MAJOR}"
-                             ".${OPEN3D_VERSION_MINOR}"
-                             ".${OPEN3D_VERSION_PATCH}"
-                             ".${OPEN3D_VERSION_TWEAK}")
-project(Open3D VERSION ${OPEN3D_VERSION})
-message(STATUS "Open3D ${PROJECT_VERSION}")
-
-# set additional info
-set(PROJECT_EMAIL   "info@open3d.org")
-set(PROJECT_HOME    "http://www.open3d.org")
-set(PROJECT_DOCS    "http://www.open3d.org/docs")
-set(PROJECT_CODE    "https://github.com/IntelVCL/Open3D")
-set(PROJECT_ISSUES  "https://github.com/IntelVCL/Open3D/issues")
-
-# configure a header file to pass the version settings to the source code
-configure_file("${PROJECT_SOURCE_DIR}/open3d_config.h.in"
-               "${PROJECT_SOURCE_DIR}/open3d_config.h")
-
-# configure a setup.py for the pip packaging
-configure_file("${PROJECT_SOURCE_DIR}/../util/pip_package/setup.py.in"
-               "${PROJECT_SOURCE_DIR}/../util/pip_package/setup.py")
-
-if(WIN32 AND NOT CYGWIN)
-    set(DEF_INSTALL_CMAKE_DIR CMake)
-else()
-    set(DEF_INSTALL_CMAKE_DIR lib/CMake/Open3D)
-endif()
-set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH
-    "Installation directory for CMake files")
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/CMake)
-
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-# config options
-option(BUILD_SHARED_LIBS         "Build shared libraries"                   OFF)
-option(WITH_OPENMP               "Use OpenMP multi-threading"               ON)
-option(ENABLE_HEADLESS_RENDERING "Use OSMesa for headless rendering"        OFF)
-option(BUILD_TESTS               "Build the Open3D test programs"           ON)
-option(BUILD_UNIT_TESTS          "Build the Open3D unit tests"              OFF)
-option(BUILD_EXPERIMENTAL        "Build the Open3D experimental programs"   ON)
-option(BUILD_EIGEN3              "Build eigen3 from source"                 OFF)
-option(BUILD_GLEW                "Build glew from source"                   OFF)
-option(BUILD_GLFW                "Build glfw from source"                   OFF)
-option(BUILD_JPEG                "Build jpeg from source"                   OFF)
-option(BUILD_JSONCPP             "Build json from source"                   OFF)
-option(BUILD_PNG                 "Build png from source"                    OFF)
-option(BUILD_PYBIND11            "Build pybind11 from source"               ON)
-option(BUILD_PYTHON_MODULE       "Build the python module"                  ON)
-option(BUILD_PYTHON_TUTORIALS    "Copy the python tutorial files"           ON)
-option(BUILD_LIBREALSENSE        "Build support for Intel RealSense camera" OFF)
-option(BUILD_TINYFILEDIALOGS     "Build tinyfiledialogs from source"        ON)
-
-# default built type
-if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING
-        "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-        FORCE)
-endif ()
-
-# recursively parse and return the entire directory tree.
-# the result is placed in output
-function(Directories root output)
-    set(data "")
-    list(APPEND data ${root})
-    file(GLOB_RECURSE children LIST_DIRECTORIES true "${root}/*")
-    list(SORT children)
-    foreach(child ${children})
-        if (IS_DIRECTORY ${child})
-            list(APPEND data ${child})
-        endif()
-    endforeach()
-    set (${output} ${data} PARENT_SCOPE)
-endfunction()
-
-# input:  a list of absolute paths in the current source dir
-# output: a list of absolute paths in the install dir
-function(SourcePath2InstallPath input output)
-    foreach(child ${input})
-
-        set(relative_path "")
-        set(install_path "")
-
-        # extract path relative to the project source dir
-        file(RELATIVE_PATH relative_path ${CMAKE_CURRENT_SOURCE_DIR} ${child})
-
-        # construct absolute path in the install dir
-        get_filename_component(install_path "${relative_path}"
-                               REALPATH
-                               BASE_DIR "${CMAKE_INSTALL_PREFIX}/include/${CMAKE_PROJECT_NAME}")
-
-        # save
-        list(APPEND converted ${install_path})
-    endforeach()
-    set (${output} ${converted} PARENT_SCOPE)
-endfunction()
-
-# set include directories
-include_directories(
-    ${PROJECT_SOURCE_DIR}
-    ${PROJECT_SOURCE_DIR}/External
-    ${PROJECT_SOURCE_DIR}/External/librealsense/include
-    )
-
-# if dynamic link is added, use if (WIN32) macro
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-
-# Set OS-specific things here
-if (WIN32)
-    # can't hide the unit testing option on Windows only
-    # as a precaution: disable unit testing on Windows regardless of user input
-    message(STATUS "Disable unit tests since this feature is not fully supported on Windows.")
-    set(BUILD_UNIT_TESTS OFF)
-
-    add_definitions(-DWINDOWS)
-    add_definitions(-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS)		# suppress C4996 warning
-    add_definitions(-DGLEW_STATIC)		# enable GLEW for windows
-    SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-    message(STATUS "Compiling on Windows")
-    if (MSVC)
-        message(STATUS "Compiling with MSVC")
-        add_definitions(-DNOMINMAX)
-        add_definitions(-D_USE_MATH_DEFINES)
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
-    endif (MSVC)
-elseif (CYGWIN)
-    SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-    message(STATUS "Compiling on Cygwin")
-    # enable c++11
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    add_definitions(-DCYGWIN)
-elseif (APPLE)
-    add_definitions(-DUNIX)
-    # enable c++11
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    # compile speed optimization for clang
-    add_definitions(-O3)
-elseif (UNIX)
-    add_definitions(-DUNIX)
-    # enable c++11
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
-    add_compile_options(-Wno-deprecated-declarations)
-    add_compile_options(-Wno-unused-result)
-    add_definitions(-O3)
-    # disable BUILD_LIBREALSENSE since it is not fully supported on Linux
-    message(STATUS "Compiling on Unix")
-    message(STATUS "Disable RealSense since it is not fully supported on Linux.")
-    set(BUILD_LIBREALSENSE OFF)
-endif ()
-
-# Set OpenMP
-if (WITH_OPENMP)
-    find_package(OpenMP QUIET)
-    if (OPENMP_FOUND)
-        message(STATUS "Using installed OpenMP ${OpenMP_VERSION}")
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-
-        set(Config_Open3D_C_FLAGS          ${OpenMP_C_FLAGS})
-        set(Config_Open3D_CXX_FLAGS        ${OpenMP_CXX_FLAGS})
-        set(Config_Open3D_EXE_LINKER_FLAGS ${OpenMP_EXE_LINKER_FLAGS})
-    else ()
-        message(STATUS "OpenMP NOT found")
-    endif ()
-endif ()
-
-# Handling dependencies
-add_subdirectory(External)
-include_directories(${PROJECT_SOURCE_DIR})
-include_directories(${EXTERNAL_INCLUDE_DIRS})
-link_directories(${EXTERNAL_LIBRARY_DIRS})
-
-# Open3D libraries
 add_subdirectory(Core)
-add_subdirectory(Tools)
 add_subdirectory(IO)
 add_subdirectory(Visualization)
+add_subdirectory(Tools)
 
-add_library(${CMAKE_PROJECT_NAME} $<TARGET_OBJECTS:Core> $<TARGET_OBJECTS:IO> $<TARGET_OBJECTS:Visualization>)
+# Unit tests
+if (BUILD_UNIT_TESTS)
+    add_subdirectory(UnitTest)
+endif ()
+
+# Python module
+if (BUILD_PYTHON_MODULE)
+    add_subdirectory(Python)
+endif ()
+
+# note: adding at least one real source file to any target that references
+# reference: https://cmake.org/cmake/help/v3.12/command/add_library.html#object-libraries
+add_library(${CMAKE_PROJECT_NAME} Open3DConfig.h Open3DConfig.cpp
+            $<TARGET_OBJECTS:Core>
+            $<TARGET_OBJECTS:IO>
+            $<TARGET_OBJECTS:Visualization>)
 
 # headless rendering
 if (ENABLE_HEADLESS_RENDERING)
@@ -210,65 +38,119 @@ else ()
 endif ()
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
-                      ${EXTERNAL_LIBRARIES}
+                      ${3RDPARTY_LIBRARIES}
                       ${OMP_LIBRARIES})
 
-# Tests
-if (BUILD_TESTS)
-    add_subdirectory(Test)
-endif ()
+# input_dirs: a list of absolute paths in the source dir
+# output_dirs: a list of relative paths in the install dir
+# input_base_dir: the base dir of input_dirs
+function(SourcePath2InstallPath input_dirs output_dirs input_base_dir)
+    get_filename_component(absolute_input_base_dir ${input_base_dir} ABSOLUTE)
+    foreach(input_dir ${input_dirs})
+        # We need to handle case where input_dir is not child subdirectory of
+        # input_base_dir (or input_base_dir itself).
+        # This could happen for pre-installed headers, e.g.
+        #   input_dir == /usr/include/libpng16
+        #   input_base_dir = /path-to-repo/Open3D
+        if(${input_dir} MATCHES "^${absolute_input_base_dir}($|/.*)")
+            # extract path relative to the project source dir
+            set(relative_path "")
+            file(RELATIVE_PATH relative_path ${absolute_input_base_dir} ${input_dir})
 
-# Unit tests
-if (BUILD_UNIT_TESTS)
-    add_subdirectory(UnitTest)
-endif ()
+            # construct relative path in the install dir
+            set(install_path "${CMAKE_INSTALL_PREFIX}/include/${CMAKE_PROJECT_NAME}/${relative_path}")
 
-# Experimental
-if (BUILD_EXPERIMENTAL)
-    message(STATUS "Build experimental projects")
-    add_subdirectory(Experimental)
-endif ()
-
-# Python binding
-if (BUILD_PYTHON_MODULE)
-    add_subdirectory(Python)
-endif ()
+            # save
+            list(APPEND converted ${install_path})
+        else()
+            # When input_dir is not child subdirectory of input_base_dir,
+            # we simply use the input_dir.
+            list(APPEND converted ${input_dir})
+        endif()
+    endforeach()
+    set (${output_dirs} ${converted} PARENT_SCOPE)
+endfunction()
 
 # build a list of include folders
-SourcePath2InstallPath("${CORE_INCLUDE_DIRS}"          INSTALL_CORE_INCLUDE_DIRS)
-SourcePath2InstallPath("${IO_INCLUDE_DIRS}"            INSTALL_IO_INCLUDE_DIRS)
-SourcePath2InstallPath("${VISUALIZATION_INCLUDE_DIRS}" INSTALL_VISUALIZATION_INCLUDE_DIRS)
-SourcePath2InstallPath("${EXTERNAL_INCLUDE_DIRS}"      INSTALL_EXTERNAL_INCLUDE_DIRS)
+SourcePath2InstallPath("${CMAKE_CURRENT_SOURCE_DIR}"   INSTALL_PROJECT_INCLUDE_DIR        ${CMAKE_CURRENT_SOURCE_DIR})
+SourcePath2InstallPath("${CORE_INCLUDE_DIRS}"          INSTALL_CORE_INCLUDE_DIRS          ${CMAKE_CURRENT_SOURCE_DIR})
+SourcePath2InstallPath("${IO_INCLUDE_DIRS}"            INSTALL_IO_INCLUDE_DIRS            ${CMAKE_CURRENT_SOURCE_DIR})
+SourcePath2InstallPath("${VISUALIZATION_INCLUDE_DIRS}" INSTALL_VISUALIZATION_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
+SourcePath2InstallPath("${3RDPARTY_INCLUDE_DIRS}"      INSTALL_3RDPARTY_INCLUDE_DIRS      ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 # set Open3D include directories
 list(APPEND CONFIG_Open3D_INCLUDE_DIRS
-     "${CMAKE_INSTALL_PREFIX}/include/${CMAKE_PROJECT_NAME}"
+     ${INSTALL_PROJECT_INCLUDE_DIR}
      ${INSTALL_CORE_INCLUDE_DIRS}
      ${INSTALL_IO_INCLUDE_DIRS}
      ${INSTALL_VISUALIZATION_INCLUDE_DIRS}
-     ${INSTALL_EXTERNAL_INCLUDE_DIRS})
+     ${INSTALL_3RDPARTY_INCLUDE_DIRS})
 list(REMOVE_DUPLICATES CONFIG_Open3D_INCLUDE_DIRS)
 list(SORT CONFIG_Open3D_INCLUDE_DIRS)
 
 # set Open3D libraries
-list(APPEND CONFIG_Open3D_LIBRARIES
-     "${CMAKE_PROJECT_NAME}"
-     ${EXTERNAL_LIBRARIES}
-     ${OMP_LIBRARIES})
+# If Open3D is a shared library
+#     - Built-from-source 3rd-party libraries is embedded in Open3D
+#     - Built-from-source 3rd-party libraries will NOT be installed
+#     - A user app needs to link
+#           1) Open3D
+#           2) Pre-installed 3rd-party libraries
+# If Open3D is a static library
+#     - Built-from-source 3rd-party libraries is NOT embedded in Open3D
+#     - Built-from-source 3rd-party libraries will be installed
+#     - A user app needs to link
+#           1) Open3D
+#           2) Pre-installed 3rd-party libraries
+#           3) Built-from-source 3rd-party libraries
+list(APPEND CONFIG_Open3D_LIBRARIES "${CMAKE_PROJECT_NAME}" ${OMP_LIBRARIES})
+if (BUILD_SHARED_LIBS)
+    list(APPEND CONFIG_Open3D_LIBRARIES ${PRE_BUILT_3RDPARTY_LIBRARIES})
+else ()
+    list(APPEND CONFIG_Open3D_LIBRARIES ${3RDPARTY_LIBRARIES})
+endif ()
+
+# hot-fix for glfw vs glfw3 issue for Windows
+# TODO: we shall revisit this for a better fix
+# glfw is the target_name i.e. there is add_library(glfw) in glfw's cmake
+# glfw3.lib (or libglfw3.a) is the library name of the compiled glfw
+function(list_replace src_list dst_list src_val dst_val)
+    foreach(val ${src_list})
+        if(${val} STREQUAL ${src_val})
+            message(STATUS "Replacing ${val} with ${dst_val}")
+            list(APPEND converted ${dst_val})
+        else()
+            list(APPEND converted ${val})
+        endif()
+    endforeach()
+    set(${dst_list} ${converted} PARENT_SCOPE)
+endfunction(list_replace)
+
+if (${BUILD_GLFW})
+    message(STATUS "${CONFIG_Open3D_LIBRARIES}")
+    list_replace("${CONFIG_Open3D_LIBRARIES}" CONFIG_Open3D_LIBRARIES "glfw" "glfw3")
+    message(STATUS "${CONFIG_Open3D_LIBRARIES}")
+endif()
 
 # set Open3D library directories
 list(APPEND CONFIG_Open3D_LIBRARY_DIRS
     "${CMAKE_INSTALL_PREFIX}/lib"
-    ${EXTERNAL_LIBRARY_DIRS}
+    ${3RDPARTY_LIBRARY_DIRS}
     ${OMP_LIBRARY_DIRS})
 
+include(CMakePackageConfigHelpers)
+
 # find_package Open3D
-configure_file(Open3DConfig.cmake.in
-               "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/Open3DConfig.cmake" @ONLY)
+configure_package_config_file(Open3DConfig.cmake.in
+                              "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/Open3DConfig.cmake"
+                              INSTALL_DESTINATION ${INSTALL_CMAKE_DIR}
+                              PATH_VARS CONFIG_Open3D_INCLUDE_DIRS CONFIG_Open3D_LIBRARY_DIRS
+                              NO_SET_AND_CHECK_MACRO
+                              NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 
 # find_package Open3D Version
-configure_file(Open3DConfigVersion.cmake.in
-               "${PROJECT_BINARY_DIR}/Open3DConfigVersion.cmake" @ONLY)
+write_basic_package_version_file("${PROJECT_BINARY_DIR}/Open3DConfigVersion.cmake"
+                                 VERSION ${PROJECT_VERSION}
+                                 COMPATIBILITY ExactVersion)
 
 # install
 install(TARGETS ${CMAKE_PROJECT_NAME}

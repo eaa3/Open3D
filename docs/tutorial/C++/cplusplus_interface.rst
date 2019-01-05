@@ -5,14 +5,14 @@ C++ interface
 
 This page explains how to create a CMake based C++ project using the Open3D C++ interface.
 
-.. note:: For help on the C++ interfaces, refer to examples in [src/Test] and [src/Tools] folder and check `Doxygen document for C++ API <http://open3d.org/cppapi>`_.
+.. note:: For help on the C++ interfaces, refer to examples in [examples/Cpp/Test], [examples/Cpp/Experimental] and [src/Tools] folder and check `Doxygen document for C++ API <http://open3d.org/cppapi>`_.
 
 .. _install_open3d_from_source:
 
 Install open3d from source
 ==========================
 
-For installing from source see :ref:`getting_started_compilation`.
+For installing from source see :ref:`compilation`.
 
 .. _create_cplusplus_project:
 
@@ -42,14 +42,14 @@ This technique is required when installing Open3D to a user location rather than
 
 .. literalinclude:: ../../_static/C++/CMakeLists.txt
    :language: cmake
-   :lineno-start: 5
-   :lines: 5
+   :lineno-start: 13
+   :lines: 13-18
    :linenos:
 
 This section of the ``CMakeLists.txt`` specifies the installed Open3D include directories, libraries and library directories.
 
 .. literalinclude:: ../../_static/C++/CMakeLists.txt
    :language: cmake
-   :lineno-start: 21
-   :lines: 21-41
+   :lineno-start: 40
+   :lines: 40-46
    :linenos:

@@ -24,9 +24,53 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
-#include "UnitTest.h"
+#include "Utility/UnitTest.h"
 
-TEST(FileJSON, Default)
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(FileJSON, DISABLED_ReadIJsonConvertibleFromJSONStream)
 {
-    NotImplemented();
+    unit_test::NotImplemented();
 }
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(FileJSON, DISABLED_WriteIJsonConvertibleToJSONStream)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(FileJSON, DISABLED_ReadIJsonConvertibleFromJSON)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(FileJSON, DISABLED_WriteIJsonConvertibleToJSON)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(FileJSON, DISABLED_ReadIJsonConvertibleFromJSONString)
+{
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(FileJSON, DISABLED_WriteIJsonConvertibleToJSONString)
+{
+    unit_test::NotImplemented();
+}
+

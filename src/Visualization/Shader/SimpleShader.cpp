@@ -32,7 +32,7 @@
 #include <Visualization/Shader/Shader.h>
 #include <Visualization/Utility/ColorMap.h>
 
-namespace three{
+namespace open3d{
 
 namespace glsl {
 
@@ -200,7 +200,7 @@ bool SimpleShaderForLineSet::PrepareRendering(const Geometry &geometry,
         PrintShaderWarning("Rendering type is not LineSet.");
         return false;
     }
-    glLineWidth(1.0f);
+    glLineWidth(GLfloat(option.line_width_));
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     return true;
@@ -324,6 +324,6 @@ bool SimpleShaderForTriangleMesh::PrepareBinding(const Geometry &geometry,
     return true;
 }
 
-}    // namespace three::glsl
+}    // namespace open3d::glsl
 
-}    // namespace three
+}    // namespace open3d

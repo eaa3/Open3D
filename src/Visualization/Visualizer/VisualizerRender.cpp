@@ -36,7 +36,7 @@
 
 #include <Visualization/Utility/GLHelper.h>
 
-namespace three{
+namespace open3d{
 
 bool Visualizer::InitOpenGL()
 {
@@ -213,11 +213,9 @@ void Visualizer::CaptureScreenImage(const std::string &filename/* = ""*/,
     if (!camera_filename.empty()) {
         PrintDebug("[Visualizer] Screen camera capture to %s\n",
                 camera_filename.c_str());
-        PinholeCameraTrajectory trajectory;
-        trajectory.extrinsic_.resize(1);
-        view_control_ptr_->ConvertToPinholeCameraParameters(
-                trajectory.intrinsic_, trajectory.extrinsic_[0]);
-        WriteIJsonConvertible(camera_filename, trajectory);
+        PinholeCameraParameters parameter;
+        view_control_ptr_->ConvertToPinholeCameraParameters(parameter);
+        WriteIJsonConvertible(camera_filename, parameter);
     }
 }
 
@@ -246,7 +244,7 @@ std::shared_ptr<Image> Visualizer::CaptureDepthFloatBuffer(
     std::vector<float> float_buffer(depth_image.height_);
     float *p = (float *)depth_image.data_.data();
     for (int j = 0; j < depth_image.width_; j++) {
-        glReadPixels(j, 0, 1, depth_image.width_,
+        glReadPixels(j, 0, 1, depth_image.height_,
                 GL_DEPTH_COMPONENT, GL_FLOAT,
                 float_buffer.data());
         for (int i = 0; i < depth_image.height_; i++) {
@@ -361,11 +359,9 @@ void Visualizer::CaptureDepthImage(const std::string &filename/* = ""*/,
     if (!camera_filename.empty()) {
         PrintDebug("[Visualizer] Depth camera capture to %s\n",
                 camera_filename.c_str());
-        PinholeCameraTrajectory trajectory;
-        trajectory.extrinsic_.resize(1);
-        view_control_ptr_->ConvertToPinholeCameraParameters(
-                trajectory.intrinsic_, trajectory.extrinsic_[0]);
-        WriteIJsonConvertible(camera_filename, trajectory);
+        PinholeCameraParameters parameter;
+        view_control_ptr_->ConvertToPinholeCameraParameters(parameter);
+        WriteIJsonConvertible(camera_filename, parameter);
     }
 }
 
@@ -447,11 +443,9 @@ void Visualizer::CaptureDepthPointCloud(const std::string &filename/* = ""*/,
     if (!camera_filename.empty()) {
         PrintDebug("[Visualizer] Depth camera capture to %s\n",
                 camera_filename.c_str());
-        PinholeCameraTrajectory trajectory;
-        trajectory.extrinsic_.resize(1);
-        view_control_ptr_->ConvertToPinholeCameraParameters(
-                trajectory.intrinsic_, trajectory.extrinsic_[0]);
-        WriteIJsonConvertible(camera_filename, trajectory);
+        PinholeCameraParameters parameter;
+        view_control_ptr_->ConvertToPinholeCameraParameters(parameter);
+        WriteIJsonConvertible(camera_filename, parameter);
     }
 }
 
@@ -467,4 +461,4 @@ void Visualizer::CaptureRenderOption(const std::string &filename/* = ""*/)
     WriteIJsonConvertible(json_filename, *render_option_ptr_);
 }
 
-}    // namespace three
+}    // namespace open3d

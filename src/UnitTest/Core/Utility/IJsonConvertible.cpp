@@ -24,9 +24,137 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
-#include "UnitTest.h"
+#include "Utility/UnitTest.h"
 
-TEST(IJsonConvertible, Default)
+#include "Core/Utility/IJsonConvertible.h"
+#include <json/json.h>
+
+using namespace Eigen;
+using namespace open3d;
+using namespace std;
+using namespace unit_test;
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(IJsonConvertible, EigenVector3dToFromJsonArray)
 {
-    NotImplemented();
+    int loops = 10000;
+    srand((unsigned int) time(0));
+    for (int i = 0; i < loops; i++)
+    {
+        Vector3d v3d = Vector3d::Random();
+
+        bool status = false;
+        Json::Value json_value;
+        Vector3d ref;
+
+        status = IJsonConvertible::EigenVector3dToJsonArray(v3d, json_value);
+        EXPECT_TRUE(status);
+
+        status = IJsonConvertible::EigenVector3dFromJsonArray(ref, json_value);
+        EXPECT_TRUE(status);
+
+        ExpectEQ(ref, v3d);
+    }
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(IJsonConvertible, EigenVector4dToFromJsonArray)
+{
+    int loops = 10000;
+    srand((unsigned int) time(0));
+    for (int i = 0; i < loops; i++)
+    {
+        Vector4d v4d = Vector4d::Random();
+
+        bool status = false;
+        Json::Value json_value;
+        Vector4d ref;
+
+        status = IJsonConvertible::EigenVector4dToJsonArray(v4d, json_value);
+        EXPECT_TRUE(status);
+
+        status = IJsonConvertible::EigenVector4dFromJsonArray(ref, json_value);
+        EXPECT_TRUE(status);
+
+        ExpectEQ(ref, v4d);
+    }
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(IJsonConvertible, EigenMatrix3dToFromJsonArray)
+{
+    int loops = 10000;
+    srand((unsigned int) time(0));
+    for (int i = 0; i < loops; i++)
+    {
+        Matrix3d m3d = Matrix3d::Random();
+
+        bool status = false;
+        Json::Value json_value;
+        Matrix3d ref;
+
+        status = IJsonConvertible::EigenMatrix3dToJsonArray(m3d, json_value);
+        EXPECT_TRUE(status);
+
+        status = IJsonConvertible::EigenMatrix3dFromJsonArray(ref, json_value);
+        EXPECT_TRUE(status);
+
+        ExpectEQ(ref, m3d);
+    }
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(IJsonConvertible, EigenMatrix4dToFromJsonArray)
+{
+    int loops = 10000;
+    srand((unsigned int) time(0));
+    for (int i = 0; i < loops; i++)
+    {
+        Matrix4d m4d = Matrix4d::Random();
+
+        bool status = false;
+        Json::Value json_value;
+        Matrix4d ref;
+
+        status = IJsonConvertible::EigenMatrix4dToJsonArray(m4d, json_value);
+        EXPECT_TRUE(status);
+
+        status = IJsonConvertible::EigenMatrix4dFromJsonArray(ref, json_value);
+        EXPECT_TRUE(status);
+
+        ExpectEQ(ref, m4d);
+    }
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(IJsonConvertible, EigenMatrix6dToFromJsonArray)
+{
+    int loops = 10000;
+    srand((unsigned int) time(0));
+    for (int i = 0; i < loops; i++)
+    {
+        Matrix6d m6d = Matrix6d::Random();
+
+        bool status = false;
+        Json::Value json_value;
+        Matrix6d ref;
+
+        status = IJsonConvertible::EigenMatrix6dToJsonArray(m6d, json_value);
+        EXPECT_TRUE(status);
+
+        status = IJsonConvertible::EigenMatrix6dFromJsonArray(ref, json_value);
+        EXPECT_TRUE(status);
+
+        ExpectEQ(ref, m6d);
+    }
 }

@@ -30,7 +30,7 @@
 
 #include <Core/Utility/IJsonConvertible.h>
 
-namespace three {
+namespace open3d {
 
 class RenderOption : public IJsonConvertible
 {
@@ -55,6 +55,10 @@ public:
     const double POINT_SIZE_MIN = 1.0;
     const double POINT_SIZE_STEP = 1.0;
     const double POINT_SIZE_DEFAULT = 5.0;
+    const double LINE_WIDTH_MAX = 10.0;
+    const double LINE_WIDTH_MIN = 1.0;
+    const double LINE_WIDTH_STEP = 1.0;
+    const double LINE_WIDTH_DEFAULT = 1.0;
 
     // TriangleMesh options
     enum class MeshShadeOption {
@@ -125,6 +129,10 @@ public:
         point_size_ = std::max(std::min(point_size_ + change * POINT_SIZE_STEP,
                 POINT_SIZE_MAX), POINT_SIZE_MIN);
     }
+    void ChangeLineWidth(double change) {
+        line_width_ = std::max(std::min(line_width_ + change * LINE_WIDTH_STEP,
+                LINE_WIDTH_MAX), LINE_WIDTH_MIN);
+    }    
     void TogglePointShowNormal() {
         point_show_normal_ = !point_show_normal_;
     }
@@ -180,6 +188,9 @@ public:
     Eigen::Vector3d default_mesh_color_ = Eigen::Vector3d(
             0.7, 0.7, 0.7);
 
+    // LineSet options
+    double line_width_ = LINE_WIDTH_DEFAULT;
+
     // Image options
     ImageStretchOption image_stretch_option_ = ImageStretchOption::OriginalSize;
     int image_max_depth_ = 3000;
@@ -188,4 +199,4 @@ public:
     bool show_coordinate_frame_ = false;
 };
 
-}   // namespace three
+}   // namespace open3d

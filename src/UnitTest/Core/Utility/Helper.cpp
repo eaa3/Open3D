@@ -24,9 +24,12 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
-#include "UnitTest.h"
+#include "Utility/UnitTest.h"
 
-TEST(Helper, Default)
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(Helper, DISABLED_SplitString)
 {
-    NotImplemented();
+    unit_test::NotImplemented();
 }
