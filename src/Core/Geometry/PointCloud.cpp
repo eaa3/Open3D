@@ -84,6 +84,15 @@ void PointCloud::Transform(const Eigen::Matrix4d &transformation)
                 normal(0), normal(1), normal(2), 0.0);
         normal = new_normal.block<3, 1>(0, 0);
     }
+
+    for (auto &principal_curvature : principal_curvatures_) {
+        Eigen::Vector4d new_principal_curvature = transformation * Eigen::Vector4d(
+                principal_curvature(0), principal_curvature(1), principal_curvature(2), 0.0);
+        principal_curvature(0) = new_principal_curvature(0);
+        principal_curvature(1) = new_principal_curvature(1);
+        principal_curvature(2) = new_principal_curvature(2);
+        //normal = new_normal.block<3, 1>(0, 0);
+    }
 }
 
 PointCloud &PointCloud::operator+=(const PointCloud &cloud)
@@ -108,6 +117,25 @@ PointCloud &PointCloud::operator+=(const PointCloud &cloud)
     } else {
         colors_.clear();
     }
+
+    if ((!HasPoints() || HasCurvatures()) && cloud.HasCurvatures()) {
+        curvatures_.resize(new_vert_num);
+        for (size_t i = 0; i < add_vert_num; i++)
+            curvatures_[old_vert_num + i] = cloud.curvatures_[i];
+    } else {
+        curvatures_.clear();
+    }
+
+    if ((!HasPoints() || HasPrincipalCurvatures()) && cloud.HasPrincipalCurvatures()) {
+        printf("Should have added curvatures!");
+        principal_curvatures_.resize(new_vert_num);
+        for (size_t i = 0; i < add_vert_num; i++)
+            principal_curvatures_[old_vert_num + i] = cloud.principal_curvatures_[i];
+    } else {
+        principal_curvatures_.clear();
+    }
+
+    
     points_.resize(new_vert_num);
     for (size_t i = 0; i < add_vert_num; i++)
         points_[old_vert_num + i] = cloud.points_[i];
